@@ -9,15 +9,16 @@ from pydub import AudioSegment
 AudioSegment.converter = "C:/Users/jasonyip184/Desktop/yolo-object-detection/ffmpeg-20181202-72b047a-win64-static/bin/ffmpeg.exe"
 
 # load the COCO class labels our YOLO model was trained on
-LABELS = open("yolo-coco/coco.names").read().strip().split("\n")
+LABELS = open("./coco.names").read().strip().split("\n")
 
 # load our YOLO object detector trained on COCO dataset (80 classes)
 print("[INFO] loading YOLO from disk...")
-net = cv2.dnn.readNetFromDarknet("yolo-coco/yolov3.cfg", "yolo-coco/yolov3.weights")
+net = cv2.dnn.readNetFromDarknet("/Users/shreetheja/Desktop/Sinchana_project/yolo_shree/yolov3.cfg", "/Users/shreetheja/Desktop/Sinchana_project/yolo_shree/yolov3.weights")
 
 # determine only the *output* layer names that we need from YOLO
 ln = net.getLayerNames()
-ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
+print(ln)
 
 # initialize
 cap = cv2.VideoCapture(0)
