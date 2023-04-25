@@ -4,10 +4,8 @@ import cv2
 import os
 import imutils
 import subprocess
-from gtts import gTTS 
-from pydub import AudioSegment
-AudioSegment.converter = "C:/Users/jasonyip184/Desktop/yolo-object-detection/ffmpeg-20181202-72b047a-win64-static/bin/ffmpeg.exe"
-
+import gtts
+from playsound import playsound
 # load the COCO class labels our YOLO model was trained on
 LABELS = open("./coco.names").read().strip().split("\n")
 
@@ -33,9 +31,6 @@ while True:
 	ret, frame = cap.read()
 	frame = cv2.flip(frame,1)
 	frames.append(frame)
-
-	if frame_count == 300:
-		break
 	if ret:
 		key = cv2.waitKey(1)
 		if frame_count % 60 == 0:
@@ -117,17 +112,14 @@ while True:
 						H_pos = "bottom "
 
 					texts.append(H_pos + W_pos + LABELS[classIDs[i]])
-
-			print(texts)
 			
 			if texts:
 				description = ', '.join(texts)
-				tts = gTTS(description, lang='en')
-				tts.save('tts.mp3')
-				tts = AudioSegment.from_mp3("tts.mp3")
-				subprocess.call(["ffplay", "-nodisp", "-autoexit", "tts.mp3"])
+				tts = gtts.gTTS(description)
+				tts.save("realtime.mp3")
+				playsound("realtime.mp3")
 
 
 cap.release()
 cv2.destroyAllWindows()
-os.remove("tts.mp3")
+os.remove("realtime.mp3")
