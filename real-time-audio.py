@@ -24,6 +24,10 @@ frame_count = 0
 start = time.time()
 first = True
 frames = []
+cv2.namedWindow("Display", cv2.WINDOW_AUTOSIZE)
+np.random.seed(42)
+COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
+	dtype="uint8")
 
 while True:
 	frame_count += 1
@@ -87,7 +91,6 @@ while True:
 			# apply non-maxima suppression to suppress weak, overlapping bounding
 			# boxes
 			idxs = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.3)
-
 			texts = []
 
 			# ensure at least one detection exists
@@ -112,7 +115,19 @@ while True:
 						H_pos = "bottom "
 
 					texts.append(H_pos + W_pos + LABELS[classIDs[i]])
-			
+		
+		
+					(x, y) = (boxes[i][0], boxes[i][1])
+					(w, h) = (boxes[i][2], boxes[i][3])
+					# draw a bounding box rectangle and label on the image
+					color = [int(c) for c in COLORS[classIDs[i]]]
+					print(color)
+					cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+					text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
+					print(text)
+					cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,
+						0.5, color, 2)
+					cv2.imshow('Display', frame)
 			if texts:
 				description = ', '.join(texts)
 				tts = gtts.gTTS(description)
